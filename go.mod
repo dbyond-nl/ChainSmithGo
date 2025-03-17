@@ -1,4 +1,4 @@
-module chainsmith
+module github.com/dbyond-nl/chainsmithgo
 
 go 1.24.0
 

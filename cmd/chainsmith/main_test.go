@@ -27,7 +27,7 @@ certificates:
 	}
 	defer os.Remove(tempConfig)
 
-	if err := run(tempConfig); err != nil {
+	if err := run(); err != nil {
 		t.Fatalf("Application execution failed: %v", err)
 	}
 }

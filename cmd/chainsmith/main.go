@@ -8,8 +8,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"chainsmith/config"
-	"chainsmith/tls"
+	"github.com/dbyond-nl/chainsmithgo/internal/config"
+	"github.com/dbyond-nl/chainsmithgo/pkg/tls"
 )
 
 var rootCmd = &cobra.Command{
