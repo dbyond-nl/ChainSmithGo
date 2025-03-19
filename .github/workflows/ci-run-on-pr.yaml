@@ -5,36 +5,15 @@ on:
 
 env:
   # Golang version to use across CI steps
-  GOLANG_VERSION: '1.23' # As we have go toolchain 1.23 specified in go.mod
+  GOLANG_VERSION: '1.24' # As we have go toolchain 1.23 specified in go.mod
 
 permissions:
   contents: read
 
 jobs:
-  codechanges:
-    if: ${{ github.event.pull_request.draft == false }}
-    runs-on: ubuntu-22.04
-    outputs:
-      backend: ${{ steps.filter.outputs.backend_any_changed }}
-    steps:
-      - uses: actions/checkout@8410ad0602e1e429cee44a835ae9f77f654a6694 # v4.0.0
-      - uses: tj-actions/changed-files@e9772d140489982e0e3704fea5ee93d536f1e275 # v45.0.1
-        id: filter
-        with:
-          # Any file which is not under docs/ or is not a markdown file is counted as a backend file
-          files_yaml: |
-            backend:
-              - go.mod
-              - go.sum
-              - '**.go'
-              - '.github/workflows/ci-build.yaml'
-
   check-go:
     name: Ensure Go modules synchronicity
     runs-on: ubuntu-22.04
-    if: ${{ needs.codechanges.outputs.backend == 'true' && github.event.pull_request.draft == false}}
-    needs:
-      - codechanges
     steps:
       - name: Checkout code
         uses: actions/checkout@8410ad0602e1e429cee44a835ae9f77f654a6694 # v4.0.0
@@ -53,9 +32,6 @@ jobs:
   lint-go:
     name: Lint Go code
     runs-on: ubuntu-22.04
-    if: ${{ needs.codechanges.outputs.backend == 'true' && github.event.pull_request.draft == false}}
-    needs:
-      - codechanges
     permissions:
       contents: read # for actions/checkout to fetch code
       pull-requests: read # for golangci/golangci-lint-action to fetch pull requests
@@ -67,17 +43,14 @@ jobs:
         with:
           go-version: ${{ env.GOLANG_VERSION }}
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@aaa42aa0628b4ae2578232a66b541047968fac86 # v6.1.0
+        uses: golangci/golangci-lint-action@4696ba8babb6127d732c3c6dde519db15edab9ea # v6.5.0
         with:
-          version: v1.60.3
+          version: v1.64.8
           args: --verbose
 
   unittests:
     name: Run unittests
     runs-on: ubuntu-22.04
-    if: ${{ needs.codechanges.outputs.backend == 'true' && github.event.pull_request.draft == false}}
-    needs:
-      - codechanges
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
