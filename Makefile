@@ -10,7 +10,7 @@ all: build
 
 build:
 	mkdir -p bin
-	go build -o ./bin/chainsmith ./main.go
+	go build -o ./bin/chainsmith ./cmd/chainsmith
 
 .PHONY: fmt
 fmt: ## Run go fmt against code.
