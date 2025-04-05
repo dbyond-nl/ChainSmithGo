@@ -13,6 +13,7 @@ import (
 	"github.com/pgvillage-tools/chainsmith/pkg/tls"
 )
 
+// Create the root command object with version information
 var rootCmd = &cobra.Command{
 	Use:   "chainsmith",
 	Short: "Chainsmith - A simple certificate chain manager",
@@ -31,6 +32,7 @@ func init() {
 	rootCmd.AddCommand(issueCmd, listCmd, revokeCmd)
 }
 
+// issueCmd generates CA and certificates based on a configuration file read with Viper.
 var issueCmd = &cobra.Command{
 	Use:   "issue",
 	Short: "Generate CA and certificates based on the configuration file",
@@ -43,6 +45,7 @@ var issueCmd = &cobra.Command{
 	},
 }
 
+// listCmd reads the configuration file using Viper and lists all issued certificates
 var listCmd = &cobra.Command{
 	Use:   "list",
 	Short: "List all issued certificates",
@@ -59,6 +62,8 @@ var listCmd = &cobra.Command{
 	},
 }
 
+// revokeCmd takes the name of a certificate to revoke and deletes the corresponding files.
+// It also removes the certificate from the configuration file.
 var revokeCmd = &cobra.Command{
 	Use:   "revoke <certificate_name>",
 	Short: "Revoke a certificate",
@@ -87,6 +92,7 @@ var revokeCmd = &cobra.Command{
 	},
 }
 
+// loadConfig unmarshals the configuration file into a Config struct using Viper and returns it.
 func loadConfig(configPath string) (*config.Config, error) {
 	viper.SetConfigFile(configPath)
 	if err := viper.ReadInConfig(); err != nil {
@@ -99,6 +105,20 @@ func loadConfig(configPath string) (*config.Config, error) {
 	return &cfg, nil
 }
 
+// The run function does the heavy lifting of generating the certificate chain.
+// It generates a root certificate authority (CA), an intermediate CA,
+// and a set of certificates based on the provided configuration.
+// It uses the `tls` package to create the certificates and keys.
+// At this point it will still regenerate the whole chain.
+// Todo: Add a flag to only regenerate the leaf certificates (Issues #2).
+//
+// Parameters:
+//   - cfg: A config.Config object containing paths and settings for
+//     generating the certificates and keys.
+//
+// Returns:
+//   - error: An error if any step in the certificate generation process fails,
+//     or nil if the operation completes successfully.
 func run(cfg config.Config) error {
 	rootCert, rootKey, err := tls.GenerateCA(cfg.RootCAPath, cfg.RootCAPath+".key", nil, nil, true)
 	if err != nil {
