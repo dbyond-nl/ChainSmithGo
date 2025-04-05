@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/dbyond-nl/chainsmithgo/internal/config"
+	"github.com/dbyond-nl/chainsmithgo/internal/version"
 	"github.com/dbyond-nl/chainsmithgo/pkg/tls"
 )
 
@@ -18,6 +19,7 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("Use --help to see available commands.")
 	},
+	Version: version.GetAppVersion(),
 }
 
 func init() {

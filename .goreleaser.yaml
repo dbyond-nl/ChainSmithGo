@@ -32,7 +32,7 @@ builds:
     main: ./cmd/chainsmith
     binary: chainsmith
     ldflags:
-      - -s -w -X "internal.appVersion={{.Version}}"
+      - -s -w -X "internal.version.appVersion={{.Version}}"
 
 archives:
   - format: tar.gz
